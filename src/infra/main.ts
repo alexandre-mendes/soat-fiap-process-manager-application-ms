@@ -12,10 +12,11 @@ import { processStatusMessageHandler } from './config/di-config';
 import { authMiddleware } from './api/authMiddleware';
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 
-app.use(authMiddleware)
+app.use(authMiddleware);
 app.use(processRouter);
 app.use(healthRouter);
 app.use(swaggerRouter);

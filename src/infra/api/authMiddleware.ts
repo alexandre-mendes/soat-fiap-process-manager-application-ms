@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { validateTokenUseCase } from '../config/di-config';
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Permitir rotas públicas de autenticação
   if (
     req.path.startsWith('/api/health') ||
     req.path.startsWith('/api-docs')
@@ -20,6 +19,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     return res.status(401).json({ message: 'Token inválido' });
   }
 
-  (req as any).user = result.decoded;
-  next();
+  (req as any).context = { userId: result.decoded?.sub, token };
+  return next();
 }

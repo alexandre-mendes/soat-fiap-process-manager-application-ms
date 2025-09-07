@@ -5,7 +5,12 @@ export class DefaultValidateTokenUseCase implements ValidateTokenUseCase {
 
     constructor(private userGateway: UserGateway) {}
 
-    execute(token: string): Promise<Output> {
-        return this.userGateway.validateToken(token);
+    async execute(token: string): Promise<Output> {
+        try {
+            const response = await this.userGateway.validateToken(token);
+            return response;
+        } catch (error) {
+            return { valid: false };
+        }
     }
 }

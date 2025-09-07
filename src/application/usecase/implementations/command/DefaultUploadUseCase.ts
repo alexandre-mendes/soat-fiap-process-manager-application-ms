@@ -14,8 +14,8 @@ export class DefaultUploadUseCase implements UploadUseCase {
         private processGateway: ProcessGateway
     ) { }
 
-    async execute(file: Express.Multer.File, userId: string): Promise<string> {
-        const user = await this.userGateway.findById(userId);
+    async execute(file: Express.Multer.File): Promise<string> {
+        const user = await this.userGateway.findById();
         if (!user) 
             throw new DomainError('Usuário não encontrado');
 

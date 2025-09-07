@@ -1,3 +1,3 @@
 export interface UploadUseCase {
-    execute(file: Express.Multer.File, userId: string): Promise<string>;
+    execute(file: Express.Multer.File): Promise<string>;
 }
