@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  title: API de Processos
+  description: API para gerenciar processos.
+  version: 1.0.0
+
+paths:
+  /api/process-manager:
+    get:
+      summary: Lista todos os processos
+      tags:
+        - Processos
+      responses:
+        '200':
+          description: Lista de processos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID único do processo
+                    user:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: ID do usuário
+                        name:
+                          type: string
+                          description: Nome do usuário
+                    fileName:
+                      type: string
+                      description: Nome do arquivo original
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: Data e hora de criação do processo
+                    status:
+                      type: string
+                      description: Status atual do processo (ex: 'PROCESSING', 'COMPLETED', 'FAILED')
+  
+  /api/process-manager/upload:
+    post:
+      summary: Upload de arquivo
+      tags:
+        - Processos
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: ID do usuário que está fazendo o upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                  description: Arquivo de vídeo para upload
+      responses:
+        '200':
+          description: Upload realizado com sucesso
+
+  /download/{filename}:
+    get:
+      summary: Download de arquivo
+      parameters:
+        - in: path
+          name: filename
+          required: true
+          schema:
+            type: string
+          description: Nome do arquivo para download
+      responses:
+        '200':
+          description: Arquivo baixado com sucesso
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Arquivo não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+
+  /enviar-mensagem:
+    post:
+      summary: Envia uma mensagem para a fila do SQS
+      description: >
+        Recebe um objeto de mensagem no corpo da requisição e o envia de forma assíncrona para uma fila do SQS.
+      requestBody:
+        description: Objeto de dados a ser enviado como mensagem.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mensagem
+              properties:
+                mensagem:
+                  type: object
+                  description: O corpo da mensagem que será enviada.
+                  required:
+                    - id
+                    - texto
+                  properties:
+                    id:
+                      type: integer
+                      example: 123
+                    texto:
+                      type: string
+                      example: "Olá, esta é uma mensagem de teste."
+      responses:
+        '200':
+          description: Mensagem enviada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Mensagem enviada com sucesso para a fila."
+                  messageId:
+                    type: string
+                    example: "b1d0a51c-4b68-450f-a78a-f5b1d0a51c4b"
+        '400':
+          description: Requisição inválida.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "O corpo da requisição deve conter a propriedade \"mensagem\"."
+        '500':
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Erro ao enviar a mensagem para a fila."

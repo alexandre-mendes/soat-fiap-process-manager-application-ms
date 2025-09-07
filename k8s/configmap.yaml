@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: soat-fiap-process-manager-application-ms-configmap
+  namespace: default
+data:
+  AWS_REGION: us-east-1
