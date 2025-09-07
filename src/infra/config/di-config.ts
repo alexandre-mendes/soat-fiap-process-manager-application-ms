@@ -21,6 +21,8 @@ import { UpdateProcessStatusUseCase } from "../../application/usecase/UpdateProc
 import { DefaultUpdateProcessStatusUseCase } from "../../application/usecase/implementations/command/DefaultUpdateProcessStatusUseCase";
 import { IMessageConsumer, SqsMessageConsumer } from "../queue/sqs";
 import { ProcessStatusMessageHandler } from "../queue/ProcessStatusMessageHandler";
+import { ValidateTokenUseCase } from "../../application/usecase/ValidateTokenUseCase";
+import { DefaultValidateTokenUseCase } from "../../application/usecase/implementations/command/DefaultValidateTokenUseCase";
 
 
 /*
@@ -63,6 +65,7 @@ const processGateway: ProcessGateway = new DefaultProcessGateway(messageProducer
 const uploadUseCase: UploadUseCase = new DefaultUploadUseCase(userRepository, fileStorageGateway, userGateway, processGateway);
 const listProcessUseCase: ListProcessUseCase = new DefaultListProcessUseCase(userRepository);
 const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdateProcessStatusUseCase(userRepository);
+const validateTokenUseCase: ValidateTokenUseCase = new DefaultValidateTokenUseCase(userGateway);
 
 /*
     Message Handlers
@@ -74,4 +77,4 @@ const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsu
 */
 const processController = new ProcessController(uploadUseCase, listProcessUseCase);
 
-export { processController, processStatusMessageHandler };
+export { processController, processStatusMessageHandler, validateTokenUseCase };
