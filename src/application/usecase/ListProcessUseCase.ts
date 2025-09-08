@@ -10,4 +10,5 @@ export interface ProcessOutput {
     fileId: string;
     createdAt: Date;
     status: string;
+    zipKey?: string;
 }

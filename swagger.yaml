@@ -42,6 +42,9 @@ paths:
                     status:
                       type: string
                       description: Status atual do processo (ex: 'PROCESSING', 'COMPLETED', 'FAILED')
+                    zipKey:
+                      type: string
+                      description: Chave do arquivo ZIP processado (disponível apenas quando status é COMPLETED)
   
   /api/process-manager/upload:
     post:

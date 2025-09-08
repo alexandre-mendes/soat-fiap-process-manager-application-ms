@@ -8,6 +8,7 @@ export interface IProcess {
     fileId: string;
     createdAt: string;
     status: string;
+    zipKey?: string;
 }
 
 export class ProcessDynamoDatabase implements IDatabase<IProcess> {

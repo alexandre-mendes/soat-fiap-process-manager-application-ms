@@ -32,7 +32,15 @@ export class DefaultProcessRepository implements ProcessRepository {
     }
 
     private parseToDB(entity: Process) {
-        return { id: entity.id, user: entity.user, fileName: entity.fileName, fileId: entity.fileId, createdAt: entity.createdAt?.toISOString(), status: entity.status } as IProcess;
+        return { 
+            id: entity.id, 
+            user: entity.user, 
+            fileName: entity.fileName, 
+            fileId: entity.fileId, 
+            createdAt: entity.createdAt?.toISOString(), 
+            status: entity.status,
+            zipKey: entity.zipKey
+        } as IProcess;
     }
 
     private parseToEntity(db: IProcess) {
@@ -40,6 +48,7 @@ export class DefaultProcessRepository implements ProcessRepository {
         entity.id = db.id;
         entity.createdAt = new Date(db.createdAt);
         entity.status = db.status;
+        entity.zipKey = db.zipKey;
         return entity;
     }
 }

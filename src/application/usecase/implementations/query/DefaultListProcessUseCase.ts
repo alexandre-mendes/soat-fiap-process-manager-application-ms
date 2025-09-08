@@ -13,7 +13,8 @@ export class DefaultListProcessUseCase implements ListProcessUseCase {
             fileName: process.fileName,
             fileId: process.fileId,
             createdAt: process.createdAt,
-            status: process.status
+            status: process.status,
+            zipKey: process.zipKey
         }));
     }
 }

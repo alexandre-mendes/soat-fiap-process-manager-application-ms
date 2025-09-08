@@ -16,6 +16,7 @@ export class Process {
     private _fileId: string;
     private _createdAt: Date;
     private _status: string;
+    private _zipKey?: string;
 
     constructor(user: UserVO, fileName: string, fileId: string) {
         if (!user || !user.id) {
@@ -36,12 +37,16 @@ export class Process {
         this._status = ProcessStatus.PENDING;
     }
 
-    updateStatus(status: ProcessStatus) {
+    updateStatus(status: ProcessStatus, zipKey?: string) {
         const validStatuses = [ProcessStatus.PENDING, ProcessStatus.IN_PROGRESS, ProcessStatus.COMPLETED, ProcessStatus.FAILED];
         if (!validStatuses.includes(status)) {
             throw new DomainError(`Status inválido: ${status}. Valores aceitos: ${validStatuses.join(', ')}`);
         }
         this._status = status;
+        
+        if (status === ProcessStatus.COMPLETED && zipKey) {
+            this._zipKey = zipKey;
+        }
     }
 
     get id() {
@@ -68,6 +73,10 @@ export class Process {
         return this._status;
     }   
 
+    get zipKey() {
+        return this._zipKey;
+    }   
+
     set id(id: string) {
         this._id = id;
     }
@@ -78,5 +87,9 @@ export class Process {
 
     set status(status: string) {
         this._status = status;
+    }
+
+    set zipKey(zipKey: string | undefined) {
+        this._zipKey = zipKey;
     }
 }

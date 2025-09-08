@@ -27,15 +27,16 @@ export class ProcessStatusMessageHandler {
         try {
             console.log("Processando mensagem:", JSON.stringify(message, null, 2));
         
-            const { processId, status } = message;
+            const { processId, status, zipKey } = message;
             
             if (!processId || !status) {
                 throw new Error(`Mensagem inválida - processId: ${processId}, status: ${status}`);
             }
 
-            await this.updateProcessStatusUseCase.execute(processId, status);
+            await this.updateProcessStatusUseCase.execute(processId, status, zipKey);
             
-            console.log(`Mensagem processada com sucesso - processId: ${processId}, status: ${status}`);
+            const zipKeyLog = zipKey ? `, zipKey: ${zipKey}` : '';
+            console.log(`Mensagem processada com sucesso - processId: ${processId}, status: ${status}${zipKeyLog}`);
         } catch (error) {
             console.error("Erro ao processar mensagem:", error);
             throw error; // Re-throw para que o consumer possa lidar com a mensagem (rejeitar ou reenviar)

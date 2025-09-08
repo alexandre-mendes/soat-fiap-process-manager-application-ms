@@ -1,3 +1,3 @@
 export interface UpdateProcessStatusUseCase {
-    execute(processId: string, status: string): Promise<void>;
+    execute(processId: string, status: string, zipKey?: string): Promise<void>;
 }

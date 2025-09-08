@@ -7,17 +7,16 @@ export class DefaultUpdateProcessStatusUseCase implements UpdateProcessStatusUse
 
     constructor(private processRepository: ProcessRepository) {}
 
-    async execute(processId: string, status: string): Promise<void> {
+    async execute(processId: string, status: string, zipKey?: string): Promise<void> {
         const process = await this.processRepository.findById(processId);
-        if (!process) {
-            throw new DomainError(`Processo com ID ${processId} não encontrado`);
-        }
+        if (!process) return;
 
         console.log(`Atualizando processo ${processId}: ${process.status} -> ${status}`);
         
-        process.updateStatus(status as ProcessStatus);
+        process.updateStatus(status as ProcessStatus, zipKey);
         await this.processRepository.save(process);
         
-        console.log(`Status do processo ${processId} atualizado para ${status} com sucesso`);
+        const zipKeyLog = zipKey ? ` com zipKey: ${zipKey}` : '';
+        console.log(`Status do processo ${processId} atualizado para ${status}${zipKeyLog} com sucesso`);
     }
 }
