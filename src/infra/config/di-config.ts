@@ -23,6 +23,8 @@ import { IMessageConsumer, SqsMessageConsumer } from "../queue/sqs";
 import { ProcessStatusMessageHandler } from "../queue/ProcessStatusMessageHandler";
 import { ValidateTokenUseCase } from "../../application/usecase/ValidateTokenUseCase";
 import { DefaultValidateTokenUseCase } from "../../application/usecase/implementations/command/DefaultValidateTokenUseCase";
+import { DownloadProcessZipUseCase } from "../../application/usecase/DownloadProcessZipUseCase";
+import { DefaultDownloadProcessZipUseCase } from "../../application/usecase/implementations/command/DefaultDownloadProcessZipUseCase";
 
 
 /*
@@ -66,6 +68,7 @@ const uploadUseCase: UploadUseCase = new DefaultUploadUseCase(userRepository, fi
 const listProcessUseCase: ListProcessUseCase = new DefaultListProcessUseCase(userRepository);
 const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdateProcessStatusUseCase(userRepository);
 const validateTokenUseCase: ValidateTokenUseCase = new DefaultValidateTokenUseCase(userGateway);
+const downloadProcessZipUseCase: DownloadProcessZipUseCase = new DefaultDownloadProcessZipUseCase(userRepository, fileStorageGateway);
 
 /*
     Message Handlers
@@ -75,6 +78,6 @@ const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsu
 /*
     Controllers
 */
-const processController = new ProcessController(uploadUseCase, listProcessUseCase);
+const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase);
 
 export { processController, processStatusMessageHandler, validateTokenUseCase };

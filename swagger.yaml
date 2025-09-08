@@ -41,10 +41,10 @@ paths:
                       description: Data e hora de criação do processo
                     status:
                       type: string
-                      description: Status atual do processo (ex: 'PROCESSING', 'COMPLETED', 'FAILED')
+                      description: Status atual do processo (ex: 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED', 'DOWNLOADED')
                     zipKey:
                       type: string
-                      description: Chave do arquivo ZIP processado (disponível apenas quando status é COMPLETED)
+                      description: Chave do arquivo ZIP processado (disponível quando status é COMPLETED, removida após DOWNLOADED)
   
   /api/process-manager/upload:
     post:
@@ -73,94 +73,41 @@ paths:
         '200':
           description: Upload realizado com sucesso
 
-  /download/{filename}:
+  /api/process-manager/{processId}/download:
     get:
-      summary: Download de arquivo
+      summary: Download do arquivo ZIP processado
+      tags:
+        - Processos
       parameters:
         - in: path
-          name: filename
+          name: processId
           required: true
           schema:
             type: string
-          description: Nome do arquivo para download
+          description: ID do processo
       responses:
         '200':
-          description: Arquivo baixado com sucesso
+          description: Download do arquivo ZIP realizado com sucesso
           content:
-            application/octet-stream:
+            application/zip:
               schema:
                 type: string
                 format: binary
-        '404':
-          description: Arquivo não encontrado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-
-  /enviar-mensagem:
-    post:
-      summary: Envia uma mensagem para a fila do SQS
-      description: >
-        Recebe um objeto de mensagem no corpo da requisição e o envia de forma assíncrona para uma fila do SQS.
-      requestBody:
-        description: Objeto de dados a ser enviado como mensagem.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - mensagem
-              properties:
-                mensagem:
-                  type: object
-                  description: O corpo da mensagem que será enviada.
-                  required:
-                    - id
-                    - texto
-                  properties:
-                    id:
-                      type: integer
-                      example: 123
-                    texto:
-                      type: string
-                      example: "Olá, esta é uma mensagem de teste."
-      responses:
-        '200':
-          description: Mensagem enviada com sucesso.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Mensagem enviada com sucesso para a fila."
-                  messageId:
-                    type: string
-                    example: "b1d0a51c-4b68-450f-a78a-f5b1d0a51c4b"
         '400':
-          description: Requisição inválida.
+          description: Erro na requisição (processo não encontrado, sem ZIP disponível, etc.)
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
-                    example: "O corpo da requisição deve conter a propriedade \"mensagem\"."
         '500':
-          description: Erro interno do servidor.
+          description: Erro interno do servidor
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
-                    example: "Erro ao enviar a mensagem para a fila."

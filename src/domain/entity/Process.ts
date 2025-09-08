@@ -5,7 +5,8 @@ export enum ProcessStatus {
     PENDING = 'PENDING',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
-    FAILED = 'FAILED'
+    FAILED = 'FAILED',
+    DOWNLOADED = 'DOWNLOADED'
 }
 
 export class Process {
@@ -38,7 +39,7 @@ export class Process {
     }
 
     updateStatus(status: ProcessStatus, zipKey?: string) {
-        const validStatuses = [ProcessStatus.PENDING, ProcessStatus.IN_PROGRESS, ProcessStatus.COMPLETED, ProcessStatus.FAILED];
+        const validStatuses = [ProcessStatus.PENDING, ProcessStatus.IN_PROGRESS, ProcessStatus.COMPLETED, ProcessStatus.FAILED, ProcessStatus.DOWNLOADED];
         if (!validStatuses.includes(status)) {
             throw new DomainError(`Status inválido: ${status}. Valores aceitos: ${validStatuses.join(', ')}`);
         }
