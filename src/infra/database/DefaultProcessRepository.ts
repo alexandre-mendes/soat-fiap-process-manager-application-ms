@@ -31,6 +31,10 @@ export class DefaultProcessRepository implements ProcessRepository {
         return undefined;
     }
 
+    async deleteById(id: string): Promise<void> {
+        await this.database.deleteById(id);
+    }
+
     private parseToDB(entity: Process) {
         return { 
             id: entity.id, 

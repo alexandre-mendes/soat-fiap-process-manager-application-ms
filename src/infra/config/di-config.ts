@@ -25,6 +25,8 @@ import { ValidateTokenUseCase } from "../../application/usecase/ValidateTokenUse
 import { DefaultValidateTokenUseCase } from "../../application/usecase/implementations/command/DefaultValidateTokenUseCase";
 import { DownloadProcessZipUseCase } from "../../application/usecase/DownloadProcessZipUseCase";
 import { DefaultDownloadProcessZipUseCase } from "../../application/usecase/implementations/command/DefaultDownloadProcessZipUseCase";
+import { DeleteProcessUseCase } from "../../application/usecase/DeleteProcessUseCase";
+import { DefaultDeleteProcessUseCase } from "../../application/usecase/implementations/command/DefaultDeleteProcessUseCase";
 
 
 /*
@@ -69,6 +71,7 @@ const listProcessUseCase: ListProcessUseCase = new DefaultListProcessUseCase(use
 const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdateProcessStatusUseCase(userRepository);
 const validateTokenUseCase: ValidateTokenUseCase = new DefaultValidateTokenUseCase(userGateway);
 const downloadProcessZipUseCase: DownloadProcessZipUseCase = new DefaultDownloadProcessZipUseCase(userRepository, fileStorageGateway);
+const deleteProcessUseCase: DeleteProcessUseCase = new DefaultDeleteProcessUseCase(userRepository, fileStorageGateway);
 
 /*
     Message Handlers
@@ -78,6 +81,6 @@ const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsu
 /*
     Controllers
 */
-const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase);
+const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase, deleteProcessUseCase);
 
 export { processController, processStatusMessageHandler, validateTokenUseCase };

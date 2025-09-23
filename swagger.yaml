@@ -111,3 +111,69 @@ paths:
                 properties:
                   message:
                     type: string
+
+    delete:
+      summary: Deletar processos
+      tags:
+        - Processos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Array de IDs dos processos a serem deletados
+              example:
+                processIds: ["process-id-1", "process-id-2"]
+      responses:
+        '200':
+          description: Exclusão concluída com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deletedCount:
+                    type: integer
+                    description: Número de processos deletados
+                  skippedCount:
+                    type: integer
+                    description: Número de processos pulados (em andamento)
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    description: Lista de erros ocorridos
+        '207':
+          description: Exclusão parcialmente concluída (com alguns erros)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deletedCount:
+                    type: integer
+                  skippedCount:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Erro na requisição
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
