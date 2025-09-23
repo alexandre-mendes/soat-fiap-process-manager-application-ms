@@ -27,6 +27,7 @@ import { DownloadProcessZipUseCase } from "../../application/usecase/DownloadPro
 import { DefaultDownloadProcessZipUseCase } from "../../application/usecase/implementations/command/DefaultDownloadProcessZipUseCase";
 import { DeleteProcessUseCase } from "../../application/usecase/DeleteProcessUseCase";
 import { DefaultDeleteProcessUseCase } from "../../application/usecase/implementations/command/DefaultDeleteProcessUseCase";
+import { MetricsController } from "../api/controller/MetricsController";
 
 
 /*
@@ -82,5 +83,6 @@ const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsu
     Controllers
 */
 const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase, deleteProcessUseCase);
+const metricsController = new MetricsController();
 
-export { processController, processStatusMessageHandler, validateTokenUseCase };
+export { processController, metricsController, processStatusMessageHandler, validateTokenUseCase };

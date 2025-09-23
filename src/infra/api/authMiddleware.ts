@@ -4,6 +4,8 @@ import { validateTokenUseCase } from '../config/di-config';
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   if (
     req.path.startsWith('/api/health') ||
+    req.path.startsWith('/api-docs') ||
+    req.path.startsWith('/metrics') ||
     req.path.startsWith('/api-docs')
   ) {
     return next();
