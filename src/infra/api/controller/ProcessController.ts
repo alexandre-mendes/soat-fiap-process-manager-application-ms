@@ -17,8 +17,14 @@ export class ProcessController {
 
     async listProcess(req: Request, res: Response) {
         RequestContextService.run((req as any).context, async () => {
-            const process = await this.listProcessUseCase.execute();
-            return res.json(process).status(200);
+            const userId = RequestContextService.getUserId();
+            
+            if (!userId) {
+                return res.status(401).json({ message: 'Usuário não identificado' });
+            }
+            
+            const processes = await this.listProcessUseCase.execute(userId);
+            return res.json(processes).status(200);
         });
     }
 

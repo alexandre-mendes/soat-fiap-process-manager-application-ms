@@ -47,17 +47,31 @@ export class ProcessDynamoDatabase implements IDatabase<IProcess> {
 
     query.andCriteria.forEach((criteria, i) => {
       const valuePlaceholder = `:v${i}`;
-      const keyAlias = `#k${i}`;
+      
+      // Tratamento especial para campos aninhados como 'user.id'
+      let keyExpression: string;
+      if (criteria.key.includes('.')) {
+        const keyParts = criteria.key.split('.');
+        const aliasKeys = keyParts.map((part, partIndex) => {
+          const alias = `#k${i}_${partIndex}`;
+          expressionNames[alias] = part;
+          return alias;
+        });
+        keyExpression = aliasKeys.join('.');
+      } else {
+        const keyAlias = `#k${i}`;
+        expressionNames[keyAlias] = criteria.key;
+        keyExpression = keyAlias;
+      }
 
-      expressionNames[keyAlias] = criteria.key;
       expressionValues[valuePlaceholder] = criteria.value;
 
       switch (criteria.operation) {
         case DBOperation.EQUALS:
-          expressionParts.push(`${keyAlias} = ${valuePlaceholder}`);
+          expressionParts.push(`${keyExpression} = ${valuePlaceholder}`);
           break;
         case DBOperation.NOT_EQUALS:
-          expressionParts.push(`${keyAlias} <> ${valuePlaceholder}`);
+          expressionParts.push(`${keyExpression} <> ${valuePlaceholder}`);
           break;
         default:
           throw new Error(`Operação não suportada: ${criteria.operation}`);

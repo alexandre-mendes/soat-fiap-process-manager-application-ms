@@ -4,15 +4,52 @@ info:
   description: API para gerenciar processos.
   version: 1.0.0
 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Token JWT no formato: Bearer <token>'
+  
+  responses:
+    UnauthorizedError:
+      description: Token de acesso ausente ou inválido
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Token não fornecido ou inválido"
+    
+    ForbiddenError:
+      description: Acesso negado - token válido mas sem permissões suficientes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Acesso negado"
+
+security:
+  - bearerAuth: []
+
 paths:
   /api/process-manager:
     get:
-      summary: Lista todos os processos
+      summary: Lista processos do usuário logado
+      description: Retorna todos os processos que pertencem ao usuário autenticado
       tags:
         - Processos
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: Lista de processos retornada com sucesso
+          description: Lista de processos do usuário retornada com sucesso
           content:
             application/json:
               schema:
@@ -45,12 +82,18 @@ paths:
                     zipKey:
                       type: string
                       description: Chave do arquivo ZIP processado (disponível quando status é COMPLETED, removida após DOWNLOADED)
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
   
   /api/process-manager/upload:
     post:
       summary: Upload de arquivo
       tags:
         - Processos
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
           name: userId
@@ -72,12 +115,18 @@ paths:
       responses:
         '200':
           description: Upload realizado com sucesso
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
 
   /api/process-manager/{processId}/download:
     get:
       summary: Download do arquivo ZIP processado
       tags:
         - Processos
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: processId
@@ -111,11 +160,17 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
 
     delete:
       summary: Deletar processos
       tags:
         - Processos
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -177,3 +232,7 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'

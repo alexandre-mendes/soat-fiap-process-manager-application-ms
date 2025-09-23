@@ -5,9 +5,10 @@ export class DefaultListProcessUseCase implements ListProcessUseCase {
 
     constructor(private processRepository: ProcessRepository) { }
 
-    async execute(): Promise<ProcessOutput[]> {
-        const processes = await this.processRepository.listAll();
+    async execute(userId: string): Promise<ProcessOutput[]> {
+        const processes = await this.processRepository.listByUserId(userId);
         
+        // A ordenação já é feita no banco, mas mantemos como fallback
         const sortedProcesses = processes.sort((a, b) => 
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );

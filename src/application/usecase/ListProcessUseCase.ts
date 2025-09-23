@@ -1,6 +1,6 @@
 
 export interface ListProcessUseCase {
-    execute(): Promise<ProcessOutput[]>;
+    execute(userId: string): Promise<ProcessOutput[]>;
 }
 
 export interface ProcessOutput {

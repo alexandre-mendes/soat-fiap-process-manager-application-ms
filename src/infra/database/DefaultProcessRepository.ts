@@ -7,10 +7,12 @@ export class DefaultProcessRepository implements ProcessRepository {
 
     constructor(private database: IDatabase<IProcess>) { }
     
-    async listAll(): Promise<Process[]> {
+
+    async listByUserId(userId: string): Promise<Process[]> {
         const query = new DBQuery();
-        query.add(new DBCriteria('status', null, DBOperation.NOT_EQUALS));
+        query.add(new DBCriteria('user.id', userId, DBOperation.EQUALS));
         query.orderBy('createdAt', 'desc');
+        
         const process = await this.database.findAllByQuery(query);
         return process.map(this.parseToEntity);
     }
