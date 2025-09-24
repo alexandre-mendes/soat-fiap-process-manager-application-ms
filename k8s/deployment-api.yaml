@@ -56,6 +56,26 @@ spec:
                 configMapKeyRef:
                   name: soat-fiap-process-manager-application-ms-configmap
                   key: AWS_REGION
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: NODE_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: PORT
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: LOG_LEVEL
+            - name: USERS_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: USERS_BASE_URL
           resources:
             requests:
               memory: "62Mi"

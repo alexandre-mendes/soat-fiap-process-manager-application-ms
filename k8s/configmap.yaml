@@ -5,3 +5,10 @@ metadata:
   namespace: default
 data:
   AWS_REGION: us-east-1
+  NODE_ENV: production
+  PORT: "3000"
+  API_VERSION: v1
+  LOG_LEVEL: info
+  TIMEOUT_MS: "30000"
+  # URLs dos outros microservices (quando necessário)
+  USERS_BASE_URL: http://soat-fiap-user-application-ms:80
