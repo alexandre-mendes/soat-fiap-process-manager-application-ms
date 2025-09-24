@@ -4,6 +4,7 @@ import { ListProcessUseCase } from "../../../application/usecase/ListProcessUseC
 import { DownloadProcessZipUseCase } from "../../../application/usecase/DownloadProcessZipUseCase";
 import { DeleteProcessUseCase } from "../../../application/usecase/DeleteProcessUseCase";
 import { RequestContextService } from "../../context/RequestContextService";
+import { FinalizeDownloadUseCase } from "../../../application/usecase/implementations/command/DefaultFinalizeDownloadUseCase";
 
 export class ProcessController {
 
@@ -11,7 +12,8 @@ export class ProcessController {
         private uploadUseCase: UploadUseCase, 
         private listProcessUseCase: ListProcessUseCase,
         private downloadProcessZipUseCase: DownloadProcessZipUseCase,
-        private deleteProcessUseCase: DeleteProcessUseCase
+        private deleteProcessUseCase: DeleteProcessUseCase,
+        private finalizeDownloadUseCase: FinalizeDownloadUseCase
     ) {
     }
 
@@ -44,39 +46,77 @@ export class ProcessController {
             }
 
             try {
-                const { fileName, fileStream, contentType } = await this.downloadProcessZipUseCase.execute(processId);
+                console.log(`[DOWNLOAD] Iniciando download para processo: ${processId}`);
                 
-                res.setHeader('Content-Type', contentType);
+                const { fileName, fileStream, contentType, contentLength } = await this.downloadProcessZipUseCase.execute(processId);
+                
+                // Headers mínimos necessários para o Swagger funcionar
+                res.setHeader('Content-Type', contentType || 'application/zip');
                 res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
                 
-                // Convert ReadableStream to Node.js Readable and pipe to response
-                const reader = fileStream.getReader();
+                if (contentLength) {
+                    res.setHeader('Content-Length', contentLength.toString());
+                    console.log(`[DOWNLOAD] Arquivo: ${fileName}, Tamanho: ${contentLength} bytes`);
+                }
                 
-                const pump = async () => {
+                // Headers específicos para Swagger UI
+                res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition, Content-Length, Content-Type');
+                res.setHeader('Cache-Control', 'no-cache');
+                
+                console.log(`[DOWNLOAD] Iniciando streaming...`);
+                
+                // Streaming direto - mais simples possível
+                fileStream.pipe(res);
+                
+                // ✅ AQUI: Atualizar status e limpar arquivo após streaming concluído
+                fileStream.on('end', async () => {
+                    console.log(`[DOWNLOAD] Streaming concluído para ${fileName}`);
+                    
                     try {
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            if (done) break;
-                            res.write(value);
-                        }
-                        res.end();
-                    } catch (error) {
-                        console.error('Erro ao fazer stream do arquivo:', error);
-                        res.status(500).json({ message: 'Erro ao fazer download do arquivo' });
+                        // Chamar endpoint para finalizar download (atualizar status + deletar arquivo)
+                        console.log(`[DOWNLOAD] Finalizando processo ${processId}...`);
+                        await this.finalizeDownload(processId);
+                        console.log(`[DOWNLOAD] Processo ${processId} finalizado com sucesso`);
+                    } catch (finalizeError) {
+                        console.error(`[DOWNLOAD] Erro ao finalizar processo ${processId}:`, finalizeError);
+                        // Não falhar o download por causa de erro de limpeza
                     }
-                };
+                });
                 
-                await pump();
+                fileStream.on('error', (error) => {
+                    console.error(`[DOWNLOAD] Erro no streaming:`, error);
+                    if (!res.headersSent) {
+                        res.status(500).json({ message: 'Erro no download' });
+                    }
+                });
                 
             } catch (error) {
-                console.error('Erro no download do ZIP:', error);
-                if (error instanceof Error) {
-                    res.status(400).json({ message: error.message });
-                } else {
-                    res.status(500).json({ message: 'Erro interno do servidor' });
+                console.error(`[DOWNLOAD] Erro geral:`, error);
+                if (!res.headersSent) {
+                    if (error instanceof Error) {
+                        res.status(400).json({ message: error.message });
+                    } else {
+                        res.status(500).json({ message: 'Erro interno do servidor' });
+                    }
                 }
             }
         });
+    }
+
+    // Método privado para finalizar download
+    private async finalizeDownload(processId: string) {
+        try {
+            console.log(`[FINALIZE] Executando finalização para processo ${processId}...`);
+            
+            // Usar o use case de finalização
+            await this.finalizeDownloadUseCase.execute(processId);
+            
+            console.log(`[FINALIZE] Processo ${processId} finalizado com sucesso`);
+            
+        } catch (error) {
+            console.error(`[FINALIZE] Erro ao finalizar processo ${processId}:`, error);
+            throw error;
+        }
     }
 
     async deleteProcesses(req: Request, res: Response) {

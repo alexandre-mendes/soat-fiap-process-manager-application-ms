@@ -1,5 +1,6 @@
 
 import { ProcessController } from "../api/controller/ProcessController";
+import { DefaultFinalizeDownloadUseCase, FinalizeDownloadUseCase } from "../../application/usecase/implementations/command/DefaultFinalizeDownloadUseCase";
 import { DynamoDb } from "../database/dynamo/DynamoConfig";
 import { IDatabase } from "../database/dynamo/IDatabase";
 import { UploadUseCase } from '../../application/usecase/UploadUseCase';
@@ -73,6 +74,7 @@ const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdate
 const validateTokenUseCase: ValidateTokenUseCase = new DefaultValidateTokenUseCase(userGateway);
 const downloadProcessZipUseCase: DownloadProcessZipUseCase = new DefaultDownloadProcessZipUseCase(userRepository, fileStorageGateway);
 const deleteProcessUseCase: DeleteProcessUseCase = new DefaultDeleteProcessUseCase(userRepository, fileStorageGateway);
+const finalizeDownloadUseCase: FinalizeDownloadUseCase = new DefaultFinalizeDownloadUseCase(userRepository, fileStorageGateway);
 
 /*
     Message Handlers
@@ -82,7 +84,7 @@ const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsu
 /*
     Controllers
 */
-const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase, deleteProcessUseCase);
+const processController = new ProcessController(uploadUseCase, listProcessUseCase, downloadProcessZipUseCase, deleteProcessUseCase, finalizeDownloadUseCase);
 const metricsController = new MetricsController();
 
 export { processController, metricsController, processStatusMessageHandler, validateTokenUseCase };

@@ -15,8 +15,24 @@ import { metricsRouter } from './api/metricsRouter';
 
 const app = express();
 
-app.use(express.json());
+// Configurações para otimizar streaming de arquivos grandes
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
+
+// Timeout personalizado para downloads grandes
+app.use('/api/process-manager/:processId/download', (req: Request, res: Response, next: NextFunction) => {
+    req.setTimeout(300000); // 5 minutos timeout
+    res.setTimeout(300000);
+    next();
+});
+
+// Timeout geral para todas as rotas de API (mais conservador)
+app.use('/api/*', (req: Request, res: Response, next: NextFunction) => {
+    req.setTimeout(60000); // 1 minuto para outras rotas
+    res.setTimeout(60000);
+    next();
+});
 
 // Middleware de métricas (antes de todas as rotas)
 app.use(metricsMiddleware);

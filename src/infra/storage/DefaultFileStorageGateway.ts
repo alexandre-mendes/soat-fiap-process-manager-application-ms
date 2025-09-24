@@ -1,6 +1,7 @@
 import { GetObjectCommand, PutObjectCommand, S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { FileStorageGateway } from "../../application/gateway/FileStorageGateway";
 import { DomainError } from "../../domain/error/DomainError";
+import { Readable } from "stream";
 
 export class DefaultFileStorageGateway implements FileStorageGateway {
 
@@ -15,6 +16,15 @@ export class DefaultFileStorageGateway implements FileStorageGateway {
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
             },
             forcePathStyle: true,
+            // Configurações otimizadas para download de arquivos grandes
+            requestHandler: {
+                requestTimeout: 300000, // 5 minutos
+                httpsAgent: {
+                    maxSockets: 50,
+                    keepAlive: true,
+                    keepAliveMsecs: 1000,
+                }
+            }
         });
     }
 
@@ -36,22 +46,50 @@ export class DefaultFileStorageGateway implements FileStorageGateway {
     }
 
 
-    async downloadFile(zipKey: string): Promise<ReadableStream> {
+    async downloadFile(zipKey: string): Promise<{
+        stream: Readable;
+        contentType: string;
+        contentLength?: number;
+    }> {
         const params = {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: zipKey,
+            // Otimizações para download de arquivos grandes
+            ResponseContentType: 'application/zip',
         };
 
         try {
+            console.log(`[S3] Iniciando download do arquivo: ${zipKey}`);
+            
             const data = await this.s3.send(new GetObjectCommand(params));
+            
             if (data.Body) {
-                return data.Body.transformToWebStream();
+                // Convert S3 Body to Node.js Readable stream
+                const stream = data.Body as Readable;
+                
+                // Configurações de stream para melhor performance
+                stream.setMaxListeners(0);
+                
+                const result = {
+                    stream,
+                    contentType: data.ContentType || 'application/zip',
+                    contentLength: data.ContentLength
+                };
+                
+                console.log(`[S3] Stream criado para ${zipKey}: ${result.contentLength} bytes`);
+                
+                return result;
             } else {
                 throw new DomainError(`Arquivo com chave ${zipKey} não encontrado`);
             }
-        } catch (err) {
-            console.error(`Erro ao baixar arquivo ${zipKey} do S3:`, err);
-            throw new Error(`Erro ao baixar o arquivo ${zipKey} do S3`);
+        } catch (err: any) {
+            console.error(`[S3] Erro ao baixar arquivo ${zipKey}:`, err);
+            
+            if (err.$metadata?.httpStatusCode === 404) {
+                throw new DomainError(`Arquivo ${zipKey} não encontrado no S3`);
+            }
+            
+            throw new Error(`Erro ao baixar o arquivo ${zipKey} do S3: ${err.message || 'Erro desconhecido'}`);
         }
     }
 

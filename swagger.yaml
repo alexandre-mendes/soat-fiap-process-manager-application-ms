@@ -1,8 +1,19 @@
 openapi: 3.0.0
 info:
   title: API de Processos
-  description: API para gerenciar processos.
+  description: |
+    API para gerenciar processos.
+    
+    **Nota importante para downloads:** O endpoint de download pode levar alguns minutos para processar arquivos grandes. O timeout está configurado para 5 minutos.
   version: 1.0.0
+
+servers:
+  - url: /
+    description: Servidor local
+    variables:
+      timeout:
+        default: "300000"
+        description: Timeout em millisegundos (5 minutos)
 
 components:
   securitySchemes:
@@ -123,6 +134,18 @@ paths:
   /api/process-manager/{processId}/download:
     get:
       summary: Download do arquivo ZIP processado
+      description: |
+        Realiza o download do arquivo ZIP processado. 
+        
+        **⚠️ Importante:**
+        - Este endpoint pode levar alguns minutos para arquivos grandes
+        - O processo será marcado como DOWNLOADED após o download
+        - O arquivo será removido do S3 após o download bem-sucedido
+        - Timeout configurado para 5 minutos
+        
+        **Pré-requisitos:**
+        - Processo deve estar no status COMPLETED
+        - Arquivo ZIP deve estar disponível no S3
       tags:
         - Processos
       security:
@@ -137,6 +160,19 @@ paths:
       responses:
         '200':
           description: Download do arquivo ZIP realizado com sucesso
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/zip
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="processo-result.zip"
+            Content-Length:
+              schema:
+                type: integer
+                description: Tamanho do arquivo em bytes
           content:
             application/zip:
               schema:
@@ -165,6 +201,7 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenError'
 
+  /api/process-manager:
     delete:
       summary: Deletar processos
       tags:
