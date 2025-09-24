@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: soat-fiap-process-manager-application-ms
-          image: 590422439565.dkr.ecr.us-east-1.amazonaws.com/soat-fiap-process-manager-application-ms:latest
+          image: 608645417480.dkr.ecr.us-east-1.amazonaws.com/soat-fiap-process-manager-application-ms:latest
           imagePullPolicy: Always
           ports:
             - name: http
