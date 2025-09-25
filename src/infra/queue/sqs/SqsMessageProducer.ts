@@ -59,6 +59,7 @@ export class SqsMessageProducer implements IMessageProducer {
       const command = new SendMessageCommand({
         MessageBody: JSON.stringify(message),
         QueueUrl: queueUrl,
+        MessageGroupId: "soat-fiap-x-group"
       });
 
       const data = await this.sqsClient.send(command);

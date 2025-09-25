@@ -20,6 +20,7 @@ export class SqsClient {
       const params = {
         MessageBody: JSON.stringify(messageBody),
         QueueUrl: queueUrl,
+        MessageGroupId: "soat-fiap-x-group"
       };
 
       const command = new SendMessageCommand(params);
