@@ -51,6 +51,31 @@ spec:
                 secretKeyRef:
                   name: aws-credentials
                   key: AWS_SESSION_TOKEN
+            - name: AWS_S3_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: AWS_S3_BUCKET_NAME
+            - name: AWS_S3_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: AWS_S3_ENDPOINT
+            - name: AWS_SQS_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: AWS_SQS_ENDPOINT
+            - name: AWS_SQS_PRODUCER_QUEUE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: AWS_SQS_PRODUCER_QUEUE_URL
+            - name: AWS_SQS_CONSUMER_QUEUE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: AWS_SQS_CONSUMER_QUEUE_URL
             - name: AWS_REGION
               valueFrom:
                 configMapKeyRef:
