@@ -10,7 +10,7 @@ data:
   API_VERSION: v1
   LOG_LEVEL: info
   TIMEOUT_MS: "30000"
-  AWS_S3_BUCKET_NAME: "process-videos"
+  AWS_S3_BUCKET_NAME: "video-processing-storage-fiap-x"
   AWS_S3_ENDPOINT: "https://s3.amazonaws.com"
   AWS_SQS_ENDPOINT: "https://sqs.us-east-1.amazonaws.com"
   AWS_SQS_PRODUCER_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/608645417480/video-processing-queue.fifo"
