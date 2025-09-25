@@ -78,8 +78,8 @@ spec:
                   key: USERS_BASE_URL
           resources:
             requests:
-              memory: "62Mi"
-              cpu: "250m"
-            limits:
-              memory: "124Mi"
+              memory: "2GB"
               cpu: "500m"
+            limits:
+              memory: "3GB"
+              cpu: "1000m"
