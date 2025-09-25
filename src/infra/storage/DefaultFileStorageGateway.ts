@@ -81,7 +81,9 @@ export class DefaultFileStorageGateway implements FileStorageGateway {
                 
                 return result;
             } else {
-                throw new DomainError(`Arquivo com chave ${zipKey} não encontrado`);
+                const err = new DomainError(`Arquivo com chave ${zipKey} não encontrado`);
+                (err as any).$metadata = { httpStatusCode: 404 };
+                throw err;
             }
         } catch (err: any) {
             console.error(`[S3] Erro ao baixar arquivo ${zipKey}:`, err);

@@ -1,5 +1,4 @@
 import { ProcessStatus } from "../../../../domain/entity/Process";
-import { DomainError } from "../../../../domain/error/DomainError";
 import { ProcessRepository } from "../../../repository/ProcessRepository";
 import { UpdateProcessStatusUseCase } from "../../UpdateProcessStatusUseCase";
 
