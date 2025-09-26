@@ -21,7 +21,7 @@ describe('DefaultUpdateProcessStatusUseCase', () => {
   });
 
   test('Deve atualizar status do processo', async () => {
-    const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     process.status = ProcessStatus.IN_PROGRESS;
     mockRepository.findById.mockResolvedValue(process);
     mockRepository.save.mockResolvedValue(process);
@@ -32,7 +32,7 @@ describe('DefaultUpdateProcessStatusUseCase', () => {
   });
 
   test('Deve atualizar status e zipKey', async () => {
-    const process = new Process({ id: 'user-2', name: 'Test User' }, 'file.mp4', 'file-2');
+  const process = new Process({ id: 'user-2', name: 'Test User', email: 'user2@email.com' }, 'file.mp4', 'file-2');
     process.status = ProcessStatus.IN_PROGRESS;
     mockRepository.findById.mockResolvedValue(process);
     mockRepository.save.mockResolvedValue(process);

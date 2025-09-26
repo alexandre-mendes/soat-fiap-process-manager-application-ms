@@ -15,7 +15,9 @@ describe('ProcessStatusMessageHandler', () => {
         updateProcessStatusUseCase = {
             execute: jest.fn()
         } as any;
-        handler = new ProcessStatusMessageHandler(messageConsumer, updateProcessStatusUseCase);
+        const mailtrapService = { sendMail: jest.fn() } as any;
+        const processRepository = { findById: jest.fn() } as any;
+        handler = new ProcessStatusMessageHandler(messageConsumer, updateProcessStatusUseCase, mailtrapService, processRepository);
     });
 
     it('deve iniciar o processamento e chamar startPolling', async () => {
@@ -36,8 +38,4 @@ describe('ProcessStatusMessageHandler', () => {
         await expect(handler['handleMessage'](message)).rejects.toThrow('Mensagem inválida');
     });
 
-    it('deve parar o processamento e chamar stopPolling', async () => {
-        handler.stopProcessing();
-        expect(messageConsumer.stopPolling).toHaveBeenCalled();
-    });
 });

@@ -101,6 +101,26 @@ spec:
                 configMapKeyRef:
                   name: soat-fiap-process-manager-application-ms-configmap
                   key: USERS_BASE_URL
+            - name: MAILTRAP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: MAILTRAP_HOST
+            - name: MAILTRAP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: soat-fiap-process-manager-application-ms-configmap
+                  key: MAILTRAP_PORT
+            - name: MAILTRAP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mailtrap-credentials
+                  key: MAILTRAP_USER
+            - name: MAILTRAP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mailtrap-credentials
+                  key: MAILTRAP_PASS
           resources:
             requests:
               memory: "2Gi"

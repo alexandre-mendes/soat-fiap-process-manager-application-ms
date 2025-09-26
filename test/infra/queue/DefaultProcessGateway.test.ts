@@ -11,7 +11,7 @@ describe('DefaultProcessGateway', () => {
   });
 
   test('send deve enviar mensagem com processId e fileId', async () => {
-    const process = new Process({ id: 'u1', name: 'User' }, 'file', 'fileId');
+  const process = new Process({ id: 'u1', name: 'User', email: 'user1@email.com' }, 'file', 'fileId');
     process.id = 'p1';
     await gateway.send(process);
     expect(messageProducerMock.send).toHaveBeenCalledWith({ processId: 'p1', fileId: 'fileId' });

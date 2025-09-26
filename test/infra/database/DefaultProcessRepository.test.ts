@@ -25,7 +25,7 @@ describe('DefaultProcessRepository', () => {
   });
 
   test('save deve salvar e retornar entidade convertida', async () => {
-    const entity = new Process({ id: 'u2', name: 'Test User' }, 'file', 'fid');
+  const entity = new Process({ id: 'u2', name: 'Test User', email: 'user2@email.com' }, 'file', 'fid');
     entity.id = '2';
     entity.createdAt = new Date();
     entity.status = 'NEW';

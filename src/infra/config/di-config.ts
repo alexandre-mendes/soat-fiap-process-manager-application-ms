@@ -22,6 +22,7 @@ import { UpdateProcessStatusUseCase } from "../../application/usecase/UpdateProc
 import { DefaultUpdateProcessStatusUseCase } from "../../application/usecase/implementations/command/DefaultUpdateProcessStatusUseCase";
 import { IMessageConsumer, SqsMessageConsumer } from "../queue/sqs";
 import { ProcessStatusMessageHandler } from "../queue/ProcessStatusMessageHandler";
+import { MailtrapService } from "../mail/MailtrapService";
 import { ValidateTokenUseCase } from "../../application/usecase/ValidateTokenUseCase";
 import { DefaultValidateTokenUseCase } from "../../application/usecase/implementations/command/DefaultValidateTokenUseCase";
 import { DownloadProcessZipUseCase } from "../../application/usecase/DownloadProcessZipUseCase";
@@ -49,7 +50,7 @@ const processDatabase: IDatabase<IProcess> = new ProcessDynamoDatabase(dynamo)
 /*
     Repositories
 */
-const userRepository: ProcessRepository = new DefaultProcessRepository(processDatabase);
+const processRepository: ProcessRepository = new DefaultProcessRepository(processDatabase);
 
 
 /*
@@ -68,18 +69,33 @@ const processGateway: ProcessGateway = new DefaultProcessGateway(messageProducer
 /*
     Use Cases
 */
-const uploadUseCase: UploadUseCase = new DefaultUploadUseCase(userRepository, fileStorageGateway, userGateway, processGateway);
-const listProcessUseCase: ListProcessUseCase = new DefaultListProcessUseCase(userRepository);
-const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdateProcessStatusUseCase(userRepository);
+const uploadUseCase: UploadUseCase = new DefaultUploadUseCase(processRepository, fileStorageGateway, userGateway, processGateway);
+const listProcessUseCase: ListProcessUseCase = new DefaultListProcessUseCase(processRepository);
+const updateProcessStatusUseCase: UpdateProcessStatusUseCase = new DefaultUpdateProcessStatusUseCase(processRepository);
 const validateTokenUseCase: ValidateTokenUseCase = new DefaultValidateTokenUseCase(userGateway);
-const downloadProcessZipUseCase: DownloadProcessZipUseCase = new DefaultDownloadProcessZipUseCase(userRepository, fileStorageGateway);
-const deleteProcessUseCase: DeleteProcessUseCase = new DefaultDeleteProcessUseCase(userRepository, fileStorageGateway);
-const finalizeDownloadUseCase: FinalizeDownloadUseCase = new DefaultFinalizeDownloadUseCase(userRepository, fileStorageGateway);
+const downloadProcessZipUseCase: DownloadProcessZipUseCase = new DefaultDownloadProcessZipUseCase(processRepository, fileStorageGateway);
+const deleteProcessUseCase: DeleteProcessUseCase = new DefaultDeleteProcessUseCase(processRepository, fileStorageGateway);
+const finalizeDownloadUseCase: FinalizeDownloadUseCase = new DefaultFinalizeDownloadUseCase(processRepository, fileStorageGateway);
+
+/*
+    MailtrapService
+*/
+const mailtrapService = new MailtrapService({
+    host: process.env.MAILTRAP_HOST || '',
+    port: Number(process.env.MAILTRAP_PORT) || 2525,
+    user: process.env.MAILTRAP_USER || '',
+    pass: process.env.MAILTRAP_PASS || ''
+});
 
 /*
     Message Handlers
 */
-const processStatusMessageHandler = new ProcessStatusMessageHandler(messageConsumer, updateProcessStatusUseCase);
+const processStatusMessageHandler = new ProcessStatusMessageHandler(
+    messageConsumer,
+    updateProcessStatusUseCase,
+    mailtrapService,
+    processRepository
+);
 
 /*
     Controllers

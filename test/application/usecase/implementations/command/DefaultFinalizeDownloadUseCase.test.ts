@@ -29,7 +29,7 @@ describe('DefaultFinalizeDownloadUseCase', () => {
   });
 
   test('Deve finalizar download e deletar arquivo do S3', async () => {
-    const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     process.zipKey = 'zip-key-123';
     process.status = ProcessStatus.COMPLETED;
     mockRepository.findById.mockResolvedValue(process);
@@ -43,7 +43,7 @@ describe('DefaultFinalizeDownloadUseCase', () => {
   });
 
   test('Deve pular limpeza se zipKey não existe', async () => {
-    const process = new Process({ id: 'user-2', name: 'Test User' }, 'file.mp4', 'file-2');
+  const process = new Process({ id: 'user-2', name: 'Test User', email: 'user2@email.com' }, 'file.mp4', 'file-2');
     process.zipKey = undefined;
     mockRepository.findById.mockResolvedValue(process);
 
@@ -58,7 +58,7 @@ describe('DefaultFinalizeDownloadUseCase', () => {
   });
 
   test('Deve lançar erro se falhar ao salvar ou deletar', async () => {
-    const process = new Process({ id: 'user-3', name: 'Test User' }, 'file.mp4', 'file-3');
+  const process = new Process({ id: 'user-3', name: 'Test User', email: 'user3@email.com' }, 'file.mp4', 'file-3');
     process.zipKey = 'zip-key-err';
     process.status = ProcessStatus.COMPLETED;
     mockRepository.findById.mockResolvedValue(process);

@@ -3,7 +3,7 @@ import { DynamoDb } from "./DynamoConfig";
 
 export interface IProcess {
     id: string;
-    user: { id: string; name: string };
+    user: { id: string; name: string; email: string };
     fileName: string;
     fileId: string;
     createdAt: string;

@@ -30,7 +30,7 @@ describe('DefaultDeleteProcessUseCase', () => {
     });
 
     test('Deve deletar processo COMPLETED com sucesso', async () => {
-        const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+    const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
         process.updateStatus(ProcessStatus.COMPLETED, 'zip-key-123');
         mockRepository.findById.mockResolvedValue(process);
         mockRepository.deleteById.mockResolvedValue();
@@ -46,7 +46,7 @@ describe('DefaultDeleteProcessUseCase', () => {
     });
 
     test('Deve pular processo IN_PROGRESS', async () => {
-        const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+    const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
         process.updateStatus(ProcessStatus.IN_PROGRESS);
         mockRepository.findById.mockResolvedValue(process);
 

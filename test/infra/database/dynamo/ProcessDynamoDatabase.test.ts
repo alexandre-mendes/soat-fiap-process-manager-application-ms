@@ -18,7 +18,7 @@ describe('ProcessDynamoDatabase', () => {
   test('save deve salvar e retornar entidade com id', async () => {
     const entity: IProcess = {
       id: '',
-      user: { id: 'u1', name: 'User' },
+  user: { id: 'u1', name: 'User', email: 'user1@email.com' },
       fileName: 'file',
       fileId: 'fid',
       createdAt: new Date().toISOString(),
@@ -26,14 +26,14 @@ describe('ProcessDynamoDatabase', () => {
     };
     dynamoMock.putItem.mockResolvedValue(undefined);
     const result = await db.save(entity);
-    expect(dynamoMock.putItem).toHaveBeenCalledWith('process', expect.objectContaining({ user: { id: 'u1', name: 'User' } }));
+    expect(dynamoMock.putItem).toHaveBeenCalledWith('process', expect.objectContaining({ user: { id: 'u1', name: 'User', email: 'user1@email.com' } }));
     expect(result.id).toBeTruthy();
   });
 
   test('update deve chamar save', async () => {
     const entity: IProcess = {
       id: 'id1',
-      user: { id: 'u2', name: 'User2' },
+  user: { id: 'u2', name: 'User2', email: 'user2@email.com' },
       fileName: 'file2',
       fileId: 'fid2',
       createdAt: new Date().toISOString(),
@@ -54,7 +54,7 @@ describe('ProcessDynamoDatabase', () => {
   test('findById deve retornar entidade correta', async () => {
     const entity: IProcess = {
       id: 'id2',
-      user: { id: 'u3', name: 'User3' },
+  user: { id: 'u3', name: 'User3', email: 'user3@email.com' },
       fileName: 'file3',
       fileId: 'fid3',
       createdAt: new Date().toISOString(),
@@ -69,7 +69,7 @@ describe('ProcessDynamoDatabase', () => {
   test('findByQuery deve retornar primeiro resultado', async () => {
     const entity: IProcess = {
       id: 'id3',
-      user: { id: 'u4', name: 'User4' },
+  user: { id: 'u4', name: 'User4', email: 'user4@email.com' },
       fileName: 'file4',
       fileId: 'fid4',
       createdAt: new Date().toISOString(),
@@ -87,7 +87,7 @@ describe('ProcessDynamoDatabase', () => {
   test('findAllByQuery deve montar expressão e retornar lista', async () => {
     const entity: IProcess = {
       id: 'id4',
-      user: { id: 'u5', name: 'User5' },
+  user: { id: 'u5', name: 'User5', email: 'user5@email.com' },
       fileName: 'file5',
       fileId: 'fid5',
       createdAt: new Date().toISOString(),

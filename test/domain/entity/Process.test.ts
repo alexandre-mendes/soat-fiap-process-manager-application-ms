@@ -2,10 +2,10 @@ import { Process, ProcessStatus } from "../../../src/domain/entity/Process";
 import { DomainError } from "../../../src/domain/error/DomainError";
 
 describe('Process Entity', () => {
-  const validUser = { id: 'user-1', name: 'Test User' };
+  const validUser = { id: 'user-1', name: 'Test User', email: 'user1@email.com' };
 
   test('Deve criar processo válido', () => {
-    const process = new Process(validUser, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     expect(process.id).toBeDefined();
     expect(process.user).toEqual(validUser);
     expect(process.fileName).toBe('file.mp4');
@@ -21,15 +21,15 @@ describe('Process Entity', () => {
   });
 
   test('Deve lançar erro se nome do arquivo inválido', () => {
-    expect(() => new Process(validUser, '', 'file-1')).toThrow(DomainError);
+  expect(() => new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, '', 'file-1')).toThrow(DomainError);
   });
 
   test('Deve lançar erro se fileId inválido', () => {
-    expect(() => new Process(validUser, 'file.mp4', '')).toThrow(DomainError);
+  expect(() => new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', '')).toThrow(DomainError);
   });
 
   test('Deve atualizar status e zipKey corretamente', () => {
-    const process = new Process(validUser, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     process.updateStatus(ProcessStatus.IN_PROGRESS);
     expect(process.status).toBe(ProcessStatus.IN_PROGRESS);
     process.updateStatus(ProcessStatus.COMPLETED, 'zip-key-123');
@@ -40,12 +40,12 @@ describe('Process Entity', () => {
   });
 
   test('Deve lançar erro ao atualizar para status inválido', () => {
-    const process = new Process(validUser, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     expect(() => process.updateStatus('INVALID' as any)).toThrow(DomainError);
   });
 
   test('Setters devem atualizar propriedades', () => {
-    const process = new Process(validUser, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     const newId = 'new-id';
     const newDate = new Date('2023-09-25T10:00:00Z');
     process.id = newId;

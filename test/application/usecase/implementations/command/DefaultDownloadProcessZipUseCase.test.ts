@@ -30,7 +30,7 @@ describe('DefaultDownloadProcessZipUseCase', () => {
   });
 
   test('Deve baixar zip de processo existente', async () => {
-  const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
   process.zipKey = 'zip-key-123';
   process.status = 'COMPLETED';
   mockRepository.findById.mockResolvedValue(process);
@@ -51,7 +51,7 @@ describe('DefaultDownloadProcessZipUseCase', () => {
   });
 
   test('Deve lançar erro se zipKey não existe', async () => {
-    const process = new Process({ id: 'user-1', name: 'Test User' }, 'file.mp4', 'file-1');
+  const process = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file.mp4', 'file-1');
     mockRepository.findById.mockResolvedValue(process);
     await expect(useCase.execute(process.id)).rejects.toThrow(DomainError);
   });

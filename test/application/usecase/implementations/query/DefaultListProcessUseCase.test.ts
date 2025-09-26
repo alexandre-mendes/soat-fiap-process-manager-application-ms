@@ -22,9 +22,9 @@ describe('DefaultListProcessUseCase', () => {
 
   test('Deve retornar lista ordenada de processos do usuário', async () => {
     const user = { id: 'user-1', name: 'Test User' };
-    const process1 = new Process(user, 'file1.mp4', 'file-1');
+  const process1 = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file1.mp4', 'file-1');
       process1.createdAt = new Date('2023-09-25T10:00:00Z');
-    const process2 = new Process(user, 'file2.mp4', 'file-2');
+  const process2 = new Process({ id: 'user-1', name: 'Test User', email: 'user1@email.com' }, 'file2.mp4', 'file-2');
       process2.createdAt = new Date('2023-09-25T12:00:00Z');
     mockRepository.listByUserId.mockResolvedValue([process1, process2]);
 

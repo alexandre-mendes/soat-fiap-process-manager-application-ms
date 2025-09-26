@@ -47,7 +47,7 @@ describe('DefaultUploadUseCase', () => {
   test('Deve criar processo e enviar para gateway', async () => {
     const mockFile = { originalname: 'file.mp4' } as Express.Multer.File;
     const mockUser = { id: 'user-1', name: 'Test User' };
-    mockUserGateway.findById.mockResolvedValue(mockUser);
+  mockUserGateway.findById.mockResolvedValue({ id: 'user-1', name: 'Test User', email: 'user1@email.com' });
     mockFileStorage.uploadFile.mockResolvedValue('file-1');
     mockRepository.save.mockImplementation(async (p) => p);
     mockProcessGateway.send.mockResolvedValue(undefined);
