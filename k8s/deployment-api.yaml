@@ -123,8 +123,8 @@ spec:
                   key: MAILTRAP_PASS
           resources:
             requests:
-              memory: "2Gi"
-              cpu: "500m"
+              memory: "300Mi"
+              cpu: "250m"
             limits:
-              memory: "3Gi"
-              cpu: "1000m"
+              memory: "600Mi"
+              cpu: "500m"
