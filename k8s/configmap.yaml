@@ -16,6 +16,6 @@ data:
   AWS_SQS_PRODUCER_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/608645417480/video-processing-queue.fifo"
   AWS_SQS_CONSUMER_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/608645417480/video-results-queue.fifo"
   # URLs dos outros microservices (quando necessário)
-  USERS_BASE_URL: http://soat-fiap-user-application-ms:80
-  MAILTRAP_HOST: sandbox.smtp.mailtrap.io
-  MAILTRAP_PORT: 2525
+  USERS_BASE_URL: "http://soat-fiap-user-application-ms:80"
+  MAILTRAP_HOST: "sandbox.smtp.mailtrap.io"
+  MAILTRAP_PORT: "2525"
